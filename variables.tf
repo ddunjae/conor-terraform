@@ -77,3 +77,37 @@ variable "linux_admin_password" {
     default = "P@ssw0rd1234!"
     sensitive = true
 }
+
+variable "nsg_name_2" {
+  type        = string
+  default     = "test-nsg2"
+}
+# Windows VM 변수
+variable "windows_vm_name" {
+  
+  type        = string
+  default     = "test-win-vm"
+}
+variable "windows_vm_size" {
+
+  type        = string
+  default     = "Standard_B2s"
+}
+variable "windows_admin_username" {
+
+  type        = string
+  default     = "azureuser"
+}
+variable "windows_admin_password" {
+  type        = string
+  default     = "P@ssw0rd1234!!"
+  sensitive   = true
+}
+variable "windows_data_disk_size_gb" {
+  type        = number
+  default     = 200
+}
+variable "windows_pip_name" {
+  type        = string
+  default     = "test-win-pip"
+}

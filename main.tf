@@ -27,16 +27,17 @@ resource "azurerm_network_security_group" "nsg_linux" {
   resource_group_name = azurerm_resource_group.rg.name
 }
 resource "azurerm_network_security_rule" "ssh" {
-    name               = "ssh"
-    priority            = 1001
-    direction         = "Inbound"
-    access            = "Allow"
-    protocol          = "Tcp"
-    source_port_range = "*"
-    destination_port_range = "22"
-    source_address_prefix = "*"
-    resource_group_name = azurerm_resource_group.rg.name
-    network_security_group_name = azurerm_network_security_group.nsg_linux.name
+  name                        = "ssh"
+  priority                    = 1001
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "22"
+  source_address_prefix       = "*"
+  destination_address_prefix  = "*"  # 추가 필요
+  resource_group_name         = azurerm_resource_group.rg.name
+  network_security_group_name = azurerm_network_security_group.nsg_linux.name
 }
 
 //NSG - Subnet - Linux
@@ -52,7 +53,7 @@ resource "azurerm_network_interface" "linux_nic" {
     ip_configuration {
         name                          = "internal"
         subnet_id                     = azurerm_subnet.snet["test-snet-1"].id
-        private_ip_address_allocation = "Dynamic"
+        private_ip_address_allocation = "Static"
         public_ip_address_id = azurerm_public_ip.linux_pip.id
 
 }
@@ -86,4 +87,74 @@ resource "azurerm_public_ip" "linux_pip" {
     resource_group_name = azurerm_resource_group.rg.name
     allocation_method = "Static"
     sku = "Standard"
+}
+
+
+# NSG - Windows
+resource "azurerm_network_security_group" "nsg2" {
+  name                = var.nsg_name_2
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+}
+# NSG Rule - Windows
+resource "azurerm_network_security_rule" "rdp" {
+  name                        = "RDP"
+  priority                    = 1001
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "3389"
+  source_address_prefix       = "*"
+  destination_address_prefix  = "*"
+  resource_group_name         = azurerm_resource_group.rg.name
+  network_security_group_name = azurerm_network_security_group.nsg2.name
+}
+# NSG -- Subnet - Windows
+resource "azurerm_subnet_network_security_group_association" "subnet_nsg2" {
+  subnet_id                 = azurerm_subnet.snet["test-snet-2"].id
+  network_security_group_id = azurerm_network_security_group.nsg2.id
+}
+
+# Public IP - Windows
+resource "azurerm_public_ip" "windows_pip" {
+  name                = "${var.windows_vm_name}-pip"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  allocation_method   = "Static"
+  sku                 = "Standard"
+}
+
+# Windows VM NIC (with public ip)
+resource "azurerm_network_interface" "windows_nic" {
+  name                = "${var.windows_vm_name}-nic"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = azurerm_subnet.snet["test-snet-2"].id
+    private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.windows_pip.id
+  }
+}
+resource "azurerm_windows_virtual_machine" "windows_vm" {
+  name                  = var.windows_vm_name
+  resource_group_name   = azurerm_resource_group.rg.name
+  location              = azurerm_resource_group.rg.location
+  size                  = var.windows_vm_size
+  admin_username        = var.windows_admin_username
+  admin_password        = var.windows_admin_password
+  network_interface_ids = [azurerm_network_interface.windows_nic.id]
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+    name                 = "${var.windows_vm_name}-osdisk"
+  }
+  source_image_reference {
+    publisher = "MicrosoftWindowsServer"
+    offer     = "WindowsServer"
+    sku       = "2022-Datacenter"
+    version   = "latest"
+  }
 }
