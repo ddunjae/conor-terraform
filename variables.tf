@@ -120,5 +120,12 @@ variable "app_service_plan_name" {
 
 variable "app_service_name" {
   type    = string
-  default = "test-webapp-conor-test"
+  default = "test0spin0conortest"
 }
+
+//Storage Account
+variable "stoage_account_name" {
+  type    = string
+  default = "test0conor0storage0test"  
+}
+//Azure Container Registry
