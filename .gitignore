@@ -3,7 +3,7 @@
 *.tfstate
 *.tfstate.*
 crash.log
-
+providers.tf
 # Terraform 환경 변수 파일 (보통 민감정보 포함)
 *.tfvars
 *.tfvars.json

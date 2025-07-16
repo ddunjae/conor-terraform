@@ -10,9 +10,9 @@ terraform {
 
 provider "azurerm" {
   features {}
-    tenant_id = "153f08bb-dab8-42cf-bc92-e02e110ca6aa"
-    subscription_id = "f2b66090-fe4b-433b-b09a-804dbcfcce74"
-    client_id = "cf5ba3a6-8bf7-4ce0-bff0-d8246c980b46"
-    client_secret = "ZgW8Q~37biVbYqrfjAJTB.ZFszOtKvxakLmI0aio"
-  #본인의 Tenant ID와 Subscription ID로 변경하세요.
+
+  tenant_id       = var.tenant_id
+  subscription_id = var.subscription_id
+  client_id       = var.client_id
+  client_secret   = var.client_secret
 }
