@@ -1,0 +1,23 @@
+# Terraform 디렉터리 및 상태 파일
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+
+# Terraform 환경 변수 파일 (보통 민감정보 포함)
+*.tfvars
+*.tfvars.json
+
+# 플랜 파일
+*.tfplan
+
+# 오토 완성, IDE 등
+*.terraformrc
+terraform.rc
+
+# VSCode 및 기타 IDE 관련
+.vscode/
+.idea/
+*.swp
+*.bak
+*.tmp
