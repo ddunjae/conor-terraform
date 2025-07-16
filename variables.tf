@@ -111,3 +111,14 @@ variable "windows_pip_name" {
   type        = string
   default     = "test-win-pip"
 }
+
+//App Service
+variable "app_service_plan_name" {
+  type    = string
+  default = "test-asp-testconor"
+}
+
+variable "app_service_name" {
+  type    = string
+  default = "test-webapp-conor-test"
+}

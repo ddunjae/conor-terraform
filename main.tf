@@ -158,3 +158,27 @@ resource "azurerm_windows_virtual_machine" "windows_vm" {
     version   = "latest"
   }
 }
+
+
+# 2. App Service Plan (Linux, B1 요금제)
+resource "azurerm_service_plan" "asp" {
+  name                = var.app_service_plan_name
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+
+  sku_name = "B1"
+  os_type  = "Linux" # 또는 "Windows"
+}
+
+# 3. App Service (Web App)
+resource "azurerm_linux_web_app" "webapp" {
+  name                = var.app_service_name
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  service_plan_id     = azurerm_service_plan.asp.id
+  site_config {
+    application_stack {
+      node_version = "18-lts"
+    }
+  }
+}
